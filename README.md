@@ -33,6 +33,10 @@ This component just wraps the [InkJS library](https://github.com/y-lohse/inkjs),
 
 #### `ink-state` component
 
+This component makes some assumptions about the state handling in your application. It uses the wonderful [aframe-state-component](https://github.com/ngokevin/kframe/tree/master/components/state) to synchronise the state of the _InkJS_ runtime and the state in the _A-Frame_ application, because there should be only [one single source of truth in your application](https://redux.js.org/introduction/three-principles). That means when you keep variables in _Ink_ they are automatically propagated to the registered application's _state_ and vice versa. The mapping of the state variables is done by their exact name. So be careful to name variables accordingly in the _Ink_ script and in your _initialState_ object!
+
+> Note that you do not have to use this component, if you decide to handle your state otherwise .
+
 
 ##### Schema
 | Property | Description | Default Value |

@@ -89,28 +89,15 @@ AFRAME.registerComponent('ink-state', {
   multiple: false,
 
   init: function () {
-    this.system = this.el.sceneEl.systems.state;
-
-    this.el.sceneEl.addEventListener('stateupdate', evt => {
-      const state = evt.detail.state;
-      var key;
-      var inkKey;
-      for (key in state) {
-        // update ink state
-        for (inkKey in this.inkStory.variablesState._globalVariables) {
-          // state variable is also used in ink
-          if (inkKey === key) {
-            const inkVal = this.inkStory.variablesState[inkKey];
-            if (!AFRAME.utils.deepEqual(inkVal, state[key])) {
-              console.log('updating ' + inkKey);
-              this.inkStory.variablesState[inkKey] = state[key];
-            }
-          }
-        }
-      }
-    });
 
     const el = this.el;
+    const system = el.sceneEl.systems.state;
+
+    if (!system) {
+      throw new Error('This component needs to have a registered state store with the aframe-state-component!')
+    }
+
+
     el.addEventListener('ink-loaded', (evt) => {
       const inkStory = evt.detail.story;
       var key;
@@ -129,6 +116,29 @@ AFRAME.registerComponent('ink-state', {
 
       this.inkStory = inkStory;
     });
+
+    el.sceneEl.addEventListener('stateupdate', evt => {
+
+      if (!this.inkStory) return;
+
+      const state = evt.detail.state;
+      var key;
+      var inkKey;
+      for (key in state) {
+        // update ink state
+        for (inkKey in this.inkStory.variablesState._globalVariables) {
+          // state variable is also used in ink
+          if (inkKey === key) {
+            const inkVal = this.inkStory.variablesState[inkKey];
+            if (!AFRAME.utils.deepEqual(inkVal, state[key])) {
+              console.log('updating ' + inkKey);
+              this.inkStory.variablesState[inkKey] = state[key];
+            }
+          }
+        }
+      }
+    });
+
 
     el.addEventListener('ink-continue', (evt) => {
       const detail = evt.detail;
