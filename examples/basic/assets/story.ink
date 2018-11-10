@@ -1,4 +1,4 @@
-VAR preset = "forest"
+VAR preset = "default"
 VAR mat = false
 
 
@@ -13,7 +13,7 @@ VAR mat = false
 	    -> find_help  
 	    
 	*	The man with the briefcase[?] looks disgusted as you stumble past him. # man
-	    ~ preset = "default" 
+	    ~ preset = "forest" 
 	    -> find_help
 	*	->
 		But it is too late: you collapse onto the station platform. This is the end.

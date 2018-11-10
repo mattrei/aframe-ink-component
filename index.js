@@ -6,9 +6,12 @@ if (typeof AFRAME === 'undefined') {
   throw new Error('Component attempted to register before AFRAME was available.');
 }
 
-/**
- * Ink component for A-Frame.
- */
+const INK_LOADED_EVENT = 'ink-loaded';
+const INK_CONTINUE_EVENT = 'ink-continue';
+const INK_STATE_VARIABLE_EVENT = 'ink-state-variable';
+
+const STATE_UPDATE_EVENT = 'stateupdate';
+
 AFRAME.registerComponent('ink', {
   schema: {
     src: {
@@ -23,22 +26,46 @@ AFRAME.registerComponent('ink', {
 
   init: function () {
     this.loader = new THREE.FileLoader();
+    const el = this.el;
+
+    this.stateUpdated = this.stateUpdated.bind(this);
+    // TODO - needed?
+    //el.sceneEl.addEventListener(STATE_UPDATE_EVENT, this.stateUpdated); 
   },
 
   update: function (oldData) {
     const data = this.data;
     const el = this.el;
+    const stateSystem = el.sceneEl.systems.state;
 
-    if (data.src !== oldData.src) {
+    if (data.src && data.src !== oldData.src) {
       this.loader.load(data.src, (json) => {
         const story = new Story(json);
-        el.emit('ink-loaded', {
-          story: story
-        });
-
 
         this.inkStory = story;
+        var key;
+        var inkKey;
+        for (key in stateSystem.state) {
+          // for 1.8.x
+          //for (inkKey of story.variablesState._globalVariables.keys()) {
+          for (inkKey in story.variablesState._globalVariables) {
+            if (inkKey === key) {
+              story.ObserveVariable(inkKey, (varName, newValue) => {
+                console.log('var changed', varName, newValue)
+                el.sceneEl.emit(INK_STATE_VARIABLE_EVENT, {
+                  [varName]: newValue
+                });
+              });
+            }
+          }
+        }
+
+        story.ResetState()
         this.continue();
+
+        el.emit(INK_LOADED_EVENT, {
+          story: story
+        });
       });
     }
 
@@ -47,7 +74,30 @@ AFRAME.registerComponent('ink', {
     }
   },
 
-  remove: function () {},
+  stateUpdated: function (evt) {
+
+    if (!this.inkStory) return;
+
+    const state = evt.detail.state;
+    var key;
+    var inkKey;
+    for (key in state) {
+      // update ink state
+      for (inkKey of this.inkStory.variablesState._globalVariables.keys()) {
+        // state variable is also used in ink
+        if (inkKey === key) {
+          const inkVal = this.inkStory.variablesState[inkKey];
+          if (!AFRAME.utils.deepEqual(inkVal, state[key])) {
+            this.inkStory.variablesState[inkKey] = state[key];
+          }
+        }
+      }
+    }
+  },
+
+  remove: function () {
+    this.el.sceneEl.removeEventListener(STATE_UPDATE_EVENT, this.stateUpdated); 
+  },
 
   continue: function (choice = -1) {
     // if (!this.inkStory) return;
@@ -66,94 +116,13 @@ AFRAME.registerComponent('ink', {
         };
       });
 
-      this.el.emit('ink-continue', {
+      const detail = {
         text: this.inkStory.currentText,
         tags: this.inkStory.currentTags,
         choices: choices
-      });
+      }
+      this.el.sceneEl.emit(INK_CONTINUE_EVENT, detail);
     }
   }
-  
-  /*,
 
-  getInkStory: function () {
-    return this.inkStory;
-  }
-  */
-});
-
-AFRAME.registerComponent('ink-state', {
-  dependencies: ['ink'],
-  schema: {},
-
-  multiple: false,
-
-  init: function () {
-
-    const el = this.el;
-    const system = el.sceneEl.systems.state;
-
-    if (!system) {
-      throw new Error('This component needs to have a registered state store with the aframe-state-component!')
-    }
-
-
-    el.addEventListener('ink-loaded', (evt) => {
-      const inkStory = evt.detail.story;
-      var key;
-      var inkKey;
-      for (key in this.system.state) {
-        for (inkKey in inkStory.variablesState._globalVariables) {
-          if (inkKey === key) {
-            inkStory.ObserveVariable(inkKey, (varName, newValue) => {
-              el.sceneEl.emit('inkState', {
-                [varName]: newValue
-              });
-            });
-          }
-        }
-      }
-
-      this.inkStory = inkStory;
-    });
-
-    el.sceneEl.addEventListener('stateupdate', evt => {
-
-      if (!this.inkStory) return;
-
-      const state = evt.detail.state;
-      var key;
-      var inkKey;
-      for (key in state) {
-        // update ink state
-        for (inkKey in this.inkStory.variablesState._globalVariables) {
-          // state variable is also used in ink
-          if (inkKey === key) {
-            const inkVal = this.inkStory.variablesState[inkKey];
-            if (!AFRAME.utils.deepEqual(inkVal, state[key])) {
-              console.log('updating ' + inkKey);
-              this.inkStory.variablesState[inkKey] = state[key];
-            }
-          }
-        }
-      }
-    });
-
-
-    el.addEventListener('ink-continue', (evt) => {
-      const detail = evt.detail;
-      const tags = detail.tags;
-
-      // set state
-      el.sceneEl.emit('currentStory', detail);
-    });
-  },
-
-  update: function (oldData) {
-
-  },
-
-  remove: function () {
-    this.el.sceneEl.removeEventListener('stateupdate', this);
-  }
 });

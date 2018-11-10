@@ -16,26 +16,17 @@ AFRAME.registerState({
   },
 
   handlers: {
-    enemyMoved: function (state, action) {
-      state.enemyPosition = action.newPosition;
-    },
-
     setChoice: function (state, action) {
-      console.log('STATE - set choice ' + action.choice);
+      //console.log('STATE - set choice ' + action.choice);
       state.choice = action.choice;
     },
-    currentStory: function (state, action) {
-      console.log('STATE - currentStory');
-      console.log(action);
+    'ink-continue': function (state, action) {
       AFRAME.utils.extend(state, action);
     },
-    inkState: function (state, action) {
-      console.log('STATE - inkState');
-      console.log(action);
-
-        // copy variable into state
+    'ink-state-variable': function (state, action) {
+      console.log('STATE - inkState', action);
+      // copy variable into state
       AFRAME.utils.extend(state, action);
-      console.log(state);
     }
   }
 });

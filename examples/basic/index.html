@@ -4,27 +4,25 @@
     <meta charset="utf-8">
     <title>A-Frame Ink Component - Basic</title>
     <meta name="description" content="Basic example for Ink component."></meta>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
     <script src="https://unpkg.com/aframe-state-component/dist/aframe-state-component.js"></script>
     <script src="../../dist/aframe-ink-component.min.js"></script>
 
     <script src="./story-manager.js"></script>
     <script src="./state.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.0.0/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
     <a-scene environemt bind__environment="preset: preset">
 
       <a-assets>
         <a-asset-item id="story-json" src="assets/story.json"></a-asset-item>
-
-
         <a-mixin id="answerText" text="color: black;" geometry="primitive: plane; width:4; height: auto" />
       </a-assets>
 
       <a-entity 
-      ink="src: #story-json" bind__ink="choice: choice" 
-      ink-state>
+        ink="src: #story-json" bind__ink="choice: choice" 
+        >
       </a-entity>
 
       <a-entity position="-2 3 -4">
