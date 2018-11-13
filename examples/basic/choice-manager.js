@@ -1,6 +1,5 @@
 
 AFRAME.registerComponent('choice-manager', {
-  dependencies: ['ink'],
   schema: {
     choices: {
       type: 'array',

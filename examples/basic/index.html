@@ -9,35 +9,31 @@
     <script src="https://unpkg.com/aframe-state-component/dist/aframe-state-component.js"></script>
     <script src="../../dist/aframe-ink-component.min.js"></script>
 
-    <script src="./story-manager.js"></script>
+    <script src="./choice-manager.js"></script>
     <script src="./state.js"></script>
   </head>
   <body>
-    <a-scene environemt bind__environment="preset: preset">
+    <a-scene environemt bind__environment="preset: preset"
+        ink="src: #story-json" bind__ink="choice: choice" 
+    >
 
       <a-assets>
         <a-asset-item id="story-json" src="assets/story.json"></a-asset-item>
         <a-mixin id="answerText" text="color: black;" geometry="primitive: plane; width:4; height: auto" />
       </a-assets>
 
-      <a-entity 
-        ink="src: #story-json" bind__ink="choice: choice" 
-        >
-      </a-entity>
-
       <a-entity position="-2 3 -4">
         <a-text bind__value="text" color="#000"></a-text>
       </a-entity>
-      <a-entity position="-2 2 -4" choice-manager 
-        bind__choice-manager="choices: choices; tags: tags">
+      <a-entity position="-2 2 -4" 
+                choice-manager 
+                bind__choice-manager="choices: choices; tags: tags">
 
       </a-entity>
 
 
       <a-camera position="0 1.6 0">
-        <a-entity cursor="rayOrigin: mouse"
-                    >
-
+        <a-entity cursor="rayOrigin: mouse">
         </a-entity>
       </a-camera>
 

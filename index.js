@@ -19,6 +19,10 @@ AFRAME.registerComponent('ink', {
     },
     choice: {
       default: undefined
+    },
+    sync: {
+      type: 'boolean',
+      default: false
     }
   },
 
@@ -29,14 +33,15 @@ AFRAME.registerComponent('ink', {
     const el = this.el;
 
     this.stateUpdated = this.stateUpdated.bind(this);
-    // TODO - needed?
-    //el.sceneEl.addEventListener(STATE_UPDATE_EVENT, this.stateUpdated); 
+    if (this.data.sync) {
+      el.addEventListener(STATE_UPDATE_EVENT, this.stateUpdated); 
+    }
   },
 
   update: function (oldData) {
     const data = this.data;
     const el = this.el;
-    const stateSystem = el.sceneEl.systems.state;
+    const stateSystem = el.systems.state;
 
     if (data.src && data.src !== oldData.src) {
       this.loader.load(data.src, (json) => {
@@ -51,8 +56,8 @@ AFRAME.registerComponent('ink', {
           for (inkKey in story.variablesState._globalVariables) {
             if (inkKey === key) {
               story.ObserveVariable(inkKey, (varName, newValue) => {
-                console.log('var changed', varName, newValue)
-                el.sceneEl.emit(INK_STATE_VARIABLE_EVENT, {
+                //console.log('var changed', varName, newValue)
+                el.emit(INK_STATE_VARIABLE_EVENT, {
                   [varName]: newValue
                 });
               });
@@ -76,7 +81,7 @@ AFRAME.registerComponent('ink', {
 
   stateUpdated: function (evt) {
 
-    if (!this.inkStory) return;
+    if (!this.inkStory || !this.data.sync) return;
 
     const state = evt.detail.state;
     var key;
@@ -96,7 +101,9 @@ AFRAME.registerComponent('ink', {
   },
 
   remove: function () {
-    this.el.sceneEl.removeEventListener(STATE_UPDATE_EVENT, this.stateUpdated); 
+    if (this.data.sync) {
+      this.el.removeEventListener(STATE_UPDATE_EVENT, this.stateUpdated); 
+    }
   },
 
   continue: function (choice = -1) {
@@ -121,7 +128,7 @@ AFRAME.registerComponent('ink', {
         tags: this.inkStory.currentTags,
         choices: choices
       }
-      this.el.sceneEl.emit(INK_CONTINUE_EVENT, detail);
+      this.el.emit(INK_CONTINUE_EVENT, detail);
     }
   }
 

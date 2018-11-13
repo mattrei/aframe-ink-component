@@ -13,15 +13,18 @@ This component provides two components for easying the integration of [Inkle's I
 
 #### `ink` component
 
-This component just wraps the [InkJS library](https://github.com/y-lohse/inkjs), for running Ink JSON files in the browser, in a few lines of code. 
+This component wraps the [InkJS library](https://github.com/y-lohse/inkjs), for running Ink JSON files in the browser, in a few lines of code. 
 
 It goes very well with the [aframe-state-component](https://github.com/ngokevin/kframe/tree/master/components/state) to synchronise the state of the _InkJS_ runtime and the state in the _A-Frame_ application, because there should be only [one single source of truth in your application](https://redux.js.org/introduction/three-principles). That means when you keep [variables in _Ink_](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md#part-3-variables-and-logic) they are automatically propagated to the registered application's _state_ and vice versa. The mapping of the state variables is done by their exact name. So be careful to name variables accordingly in the _Ink_ script and in your _initialState_ object!
+
+The component must be attached to the `a-scene` entity.
 
 ##### Schema
 | Property | Description | Default Value |
 | -------- | ----------- | ------------- |
 | src | Asset link to the story _JSON_ file produced by the [Inky](https://github.com/inkle/inky) editor. | `undefined` |
 | choice | The Ink _choice_ object to continue the storyline. Must be updated on each continuation of the story. Otherwise use the `continue` API. | `undefined` |
+| sync | Whether to sync state variables to Ink's own state machine using the _stateupdate_ event. | `false` |
 
 ##### Events
 | Name | Data | Description |
@@ -50,8 +53,7 @@ Install and use by directly including the [browser files](dist):
 </head>
 
 <body>
-  <a-scene>
-    <a-entity ink="foo: bar"></a-entity>
+  <a-scene ink="src: url('assets/story.json')">
   </a-scene>
 </body>
 ```

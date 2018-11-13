@@ -1,6 +1,6 @@
 {
   "name": "aframe-ink-component",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "A-Frame component for Inkle's Ink game scripting language",
   "main": "index.js",
   "unpkg": "dist/aframe-ink-component.min.js",
