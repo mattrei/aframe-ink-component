@@ -1,6 +1,6 @@
 {
   "name": "aframe-ink-component",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A-Frame component for Inkle's Ink game scripting language",
   "main": "index.js",
   "unpkg": "dist/aframe-ink-component.min.js",
@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/mattrei/aframe-ink-component#readme",
   "devDependencies": {
-    "aframe": "*",
+    "aframe": "^0.9.2",
     "browserify": "^13.0.0",
     "budo": "^8.2.2",
     "chai": "^3.4.1",
@@ -64,7 +64,7 @@
     "webpack": "^2.7.0"
   },
   "dependencies": {
-    "inkjs": "^1.7.2"
+    "inkjs": "^1.10.2"
   },
   "semistandard": {
     "globals": [

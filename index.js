@@ -41,28 +41,15 @@ AFRAME.registerComponent('ink', {
   update: function (oldData) {
     const data = this.data;
     const el = this.el;
-    const stateSystem = el.systems.state;
 
     if (data.src && data.src !== oldData.src) {
       this.loader.load(data.src, (json) => {
         const story = new Story(json);
 
         this.inkStory = story;
-        var key;
-        var inkKey;
-        for (key in stateSystem.state) {
-          // for 1.8.x
-          //for (inkKey of story.variablesState._globalVariables.keys()) {
-          for (inkKey in story.variablesState._globalVariables) {
-            if (inkKey === key) {
-              story.ObserveVariable(inkKey, (varName, newValue) => {
-                //console.log('var changed', varName, newValue)
-                el.emit(INK_STATE_VARIABLE_EVENT, {
-                  [varName]: newValue
-                });
-              });
-            }
-          }
+        var inkVar;
+        for (inkVar of story.variablesState._globalVariables.keys()) {
+          story.ObserveVariable(inkVar, this._inkVarChanged.bind(this));
         }
 
         story.ResetState()
@@ -77,6 +64,12 @@ AFRAME.registerComponent('ink', {
     if (this.data.choice && data.choice.index > -1) {
       this.continue(data.choice.index);
     }
+  },
+
+  _inkVarChanged: function (varName, newValue) {
+    this.el.emit(INK_STATE_VARIABLE_EVENT, {
+      [varName]: newValue
+    });
   },
 
   stateUpdated: function (evt) {

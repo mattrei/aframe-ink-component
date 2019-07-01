@@ -3,9 +3,9 @@
 [![Version](http://img.shields.io/npm/v/aframe-ink-component.svg?style=flat-square)](https://npmjs.org/package/aframe-ink-component)
 [![License](http://img.shields.io/npm/l/aframe-ink-component.svg?style=flat-square)](https://npmjs.org/package/aframe-ink-component)
 
-This component provides two components for easying the integration of [Inkle's Ink](https://www.inklestudios.com/ink/) game scripting language in [A-Frame](https://aframe.io). Note that you still have to learn [the Ink scripting language](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md) in order to make serious use of this component.
+This component eases the integration of [Inkle's Ink](https://www.inklestudios.com/ink/) game scripting language in [A-Frame](https://aframe.io). Note that you still have to learn [the Ink scripting language](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md) in order to make serious use of this component.
 
-> Supports A-Frame 0.8.0.
+> Supports A-Frame 0.9.2.
 
 ## 
 
@@ -48,7 +48,7 @@ Install and use by directly including the [browser files](dist):
 ```html
 <head>
   <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-ink-component/dist/aframe-ink-component.min.js"></script>
 </head>
 
